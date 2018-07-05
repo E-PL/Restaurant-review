@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Normalize.css for better cross-browser consistency -->
   <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
   <!-- Main CSS file -->
@@ -16,20 +17,22 @@
   <!-- Beginning header -->
   <header>
     <!-- Beginning nav -->
-    <nav>
+    <nav class="nav-with-breadcumb">
       <h1><a href="/">Restaurant Reviews</a></h1>
+      <!-- moved breadcumb into nav -->
+      <ul id="breadcrumb" >
+        <li><a href="/">Home</a></li>
+      </ul>
     </nav>
     <!-- Beginning breadcrumb -->
-    <ul id="breadcrumb" >
-      <li><a href="/">Home</a></li>
-    </ul>
+    
     <!-- End breadcrumb -->
     <!-- End nav -->
   </header>
   <!-- End header -->
 
   <!-- Beginning main -->
-  <main id="maincontent">
+  <main id="restaurant-detail-main-content">
     <!-- Beginning map -->
     <section id="map-container">
       <div id="map"></div>

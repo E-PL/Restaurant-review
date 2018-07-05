@@ -89,7 +89,8 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img'
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
-
+  // add alt to images
+  image.alt = restaurant.name;
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
 
@@ -106,6 +107,13 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
  */
 fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => {
   const hours = document.getElementById('restaurant-hours');
+  // add a heading to the opening hours
+  const heading = document.createElement('h2');
+  heading.innerHTML = 'Opening hours';
+  heading.classList.add('restaurant-hours-heading')
+  const parent = hours.parentNode;
+  parent.insertBefore(heading, hours);
+
   for (let key in operatingHours) {
     const row = document.createElement('tr');
 
@@ -148,20 +156,33 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
  */
 createReviewHTML = (review) => {
   const li = document.createElement('li');
-  const name = document.createElement('p');
+  // append reviewer name and review date in a div for styling
+  const reviewHeadingDiv = document.createElement('div');
+  reviewHeadingDiv.classList.add('review-headings'); 
+  // use an heading for the reviewer name
+  const name = document.createElement('h3');
   name.innerHTML = review.name;
-  li.appendChild(name);
+  // add a class to the review heading
+  name.classList.add('reviewer-name');
+  reviewHeadingDiv.appendChild(name);
 
   const date = document.createElement('p');
   date.innerHTML = review.date;
-  li.appendChild(date);
+  // add a class to the review date
+  date.classList.add('review-date');
+  reviewHeadingDiv.appendChild(date);
+  li.appendChild(reviewHeadingDiv);
 
   const rating = document.createElement('p');
   rating.innerHTML = `Rating: ${review.rating}`;
+  // add a class to rating
+  rating.classList.add('review-rating');
   li.appendChild(rating);
 
   const comments = document.createElement('p');
   comments.innerHTML = review.comments;
+  // add a class to the review text
+  comments.classList.add('review-text');
   li.appendChild(comments);
 
   return li;
