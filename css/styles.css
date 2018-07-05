@@ -298,12 +298,32 @@ option {
   margin: 15px;
   text-transform: uppercase;
   line-height: 1.1;
+  padding: 20px 0 20px 0;
+}
+#restaurant-img-container {
+  width: 90%;
+  display: flex;
+  flex-flow: column nowrap;
 }
 #restaurant-img {
-  width: 90%;
-  border: 1px solid #ccc;
+  width: 100%;
   border-bottom: none;
   border-top-left-radius: 25px;
+}
+#restaurant-info {
+  width: 90%;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+#restaurant-address-heading {
+    color: #333;
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: 4px;
+    padding: 0;
+    margin: 0.5em;
+    text-align: center;
 }
 #restaurant-address {
   font-size: 16px;
@@ -315,19 +335,20 @@ option {
   font-size: 12pt;
   font-weight: 300;
   letter-spacing: 10px;
-  margin: 0 0 10px;
+  margin: 0;
   padding: 0;
   text-align: center;
   text-transform: uppercase;
-  width: 90%;
+  width: 100%;
   border-bottom-right-radius: 25px;
   /*remove the line between the image and the cuisine background*/
   position: relative;
   top: -1px;
 }
 #restaurant-hours {
-  max-width: 90%;
+  max-width: 100%;
   min-width: 60%;
+  margin: auto;
   margin-bottom: 18px;
 }
 .restaurant-hours-heading {
@@ -338,12 +359,12 @@ option {
   padding: 0;
   margin: 0.5em;
 }
+
 #restaurant-hours tr {
   display: flex;
   justify-content: space-between;
   padding: 3px;
 }
-#restaurant-container,
 #reviews-container {
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
@@ -353,6 +374,15 @@ option {
   align-content: center;
   align-items: center;
   margin: auto;
+}
+#restaurant-container {
+  border-bottom: 1px solid #d9d9d9;
+  border-top: 1px solid #fff;
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+  margin: auto;
+  align-items: center;
 }
 #reviews-container h2 {
   color: #333;
@@ -511,6 +541,41 @@ option {
   #restaurant-hours {
     min-width: 53%;
   }
+  /*display restaurant image and info on 2 columns*/
+  #restaurant-container {
+    flex-flow: row wrap;
+    padding-bottom: 30px;
+  }
+  #restaurant-name {
+    width: 100%;
+    text-align: center;
+  }
+  #restaurant-img-container {
+    width: 47%;
+    margin: 0 0 0 25px;
+  }
+  #restaurant-img {
+    width: 90%;
+    border: none;
+  }
+  #restaurant-cuisine {
+    width: 90%;
+  }
+#restaurant-info {
+    justify-content: space-around;
+    text-align: center;
+    width: 50%;
+    align-self: flex-start;
+}
+  #restaurant-address-heading {
+    font-size: 35px;
+  }
+
+    .leaflet-touch .leaflet-bar a {
+    width: 30px !important;
+    height: 30px !important;
+    line-height: 30px !important;
+  }
 }
 
 /*media query for big desktops*/
@@ -522,8 +587,15 @@ option {
     width: 1400px;
     margin: auto;
   }
+  #restaurant-info {
+    width: 40%;
+  }
+  #restaurant-img-container {
+    width: 57%;
+  }
   #restaurant-hours {
-    min-width: 44%;
+    min-width: 100%;
+    padding-top: 60px;
   }
   /*display the reviews on 2 columns*/
   #reviews-list {
@@ -536,4 +608,5 @@ option {
     width: 49%;
     margin: 0 0 30px 0;
   }
+ 
 }

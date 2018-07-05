@@ -107,12 +107,6 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
  */
 fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => {
   const hours = document.getElementById('restaurant-hours');
-  // add a heading to the opening hours
-  const heading = document.createElement('h2');
-  heading.innerHTML = 'Opening hours';
-  heading.classList.add('restaurant-hours-heading')
-  const parent = hours.parentNode;
-  parent.insertBefore(heading, hours);
 
   for (let key in operatingHours) {
     const row = document.createElement('tr');
