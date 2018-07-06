@@ -1,6 +1,23 @@
 @charset "utf-8";
 /* CSS Document */
 
+/*styles for the skip link*/
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  color: #fff;
+  padding: 10px;
+  margin: 5px;
+  z-index: 9999;
+}
+.skip-link:focus {
+  top: 20px;
+  left: 50px;
+  color: #fff;
+  font-size: 20px;
+}
+
 /*styles for tags*/
 
 body,
@@ -8,13 +25,14 @@ td,
 th,
 p {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 10pt;
+  font-size: 16px;
   color: #333;
   line-height: 1.5;
 }
 body {
   background-color: #f3f3f3;
   margin: 0;
+  min-width: 300px;
 }
 ul,
 li {
@@ -67,6 +85,8 @@ section {
   display: flex;
   flex-flow: column;
   padding-top: 94px;
+  width: 100%;
+  min-width: 310px;
 }
 #restaurant-detail-main-content {
   background-color: #f3f3f3;
@@ -74,13 +94,15 @@ section {
   display: flex;
   flex-flow: column;
   padding-top: 150px;
+  min-width: 310px;
+
 }
 
 /*styles for the footer*/
 #footer {
   background-color: #252831;
   color: #fff;
-  font-size: 8pt;
+  font-size: 16px;
   letter-spacing: 1px;
   padding: 25px;
   text-align: center;
@@ -198,7 +220,7 @@ nav h1 a {
   margin: 0 1em 1em;
 }
 option {
-  font-size: 15px;
+  font-size: 16px;
 }
 
 /* ====================== Restaurant Listing ====================== */
@@ -219,10 +241,9 @@ option {
 #restaurants-list li {
   background-color: #fff;
   font-family: Arial, sans-serif;
-  margin: 20px;
   min-height: 380px;
-  /*remove padding and set full width*/
-  padding: 0 0 25px 0;
+  padding-bottom: 25px;
+  margin: 24px;
   text-align: left;
   width: 100%;
   display: flex;
@@ -234,15 +255,14 @@ option {
   background-color: #ccc;
   margin: 0;
   max-width: 100%;
-  min-height: 248px;
-  min-width: 100%;
+  height: auto;
   border: 1px solid #ccc;
   border-top-left-radius: 25px;
 }
-#restaurants-list li h1 {
+#restaurants-list li h3, #restaurants-list li h2 {
   color: #333;
   font-family: Arial, sans-serif;
-  font-size: 22px;
+  font-size: 21px;
   font-weight: 200;
   letter-spacing: 0;
   line-height: 1.3;
@@ -260,7 +280,7 @@ option {
   border: 3px solid orange;
   border-radius: 5px;
   color: #000;
-  font-size: 10pt;
+  font-size: 16px;
   margin: 5px;
   padding: 5px;
   text-align: center;
@@ -268,6 +288,16 @@ option {
   text-transform: uppercase;
   align-self: center;
   width: 50%;
+}
+
+.padded {
+  padding: 10px;
+}
+
+#error {
+  width: 30% !important;
+  border: 5px solid red !important;
+  border-radius: 25px !important;
 }
 
 /* ====================== Restaurant Details ====================== */
@@ -351,15 +381,15 @@ option {
   margin: auto;
   margin-bottom: 18px;
 }
-.restaurant-hours-heading {
-  color: #333;
-  font-size: 24px;
-  font-weight: 300;
-  letter-spacing: 4px;
-  padding: 0;
-  margin: 0.5em;
+#restaurant-hours-heading {
+    color: #333;
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: 4px;
+    padding: 0;
+    margin: 0.5em;
+    text-align: center;
 }
-
 #restaurant-hours tr {
   display: flex;
   justify-content: space-between;
@@ -384,7 +414,7 @@ option {
   margin: auto;
   align-items: center;
 }
-#reviews-container h2 {
+#reviews-container h3 {
   color: #333;
   font-size: 24px;
   font-weight: 300;
@@ -442,7 +472,7 @@ option {
   letter-spacing: 3px;
 }
 .review-text {
-  font-size: 14px;
+  font-size: 16px;
   color: #333;
   padding: 0 15px 25px 15px;
 }
@@ -451,6 +481,18 @@ option {
 }
 
 /*media queries*/
+
+/*Don't let the images grow too big*/
+@media screen and (min-width: 500px) {
+  #restaurants-list li {
+    width: 68%;
+  }
+}
+@media screen and (min-width: 600px) {
+    #restaurants-list li {
+    width: 52%;
+  }
+}
 
 /*media query for tablets*/
 @media screen and (min-width: 768px) {
@@ -475,6 +517,7 @@ option {
     padding: 0;
     height: 40px;
     font-size: 25px;
+    border-radius: 4px;
   }
   #restaurants-list p {
     font-size: 17px;
@@ -500,8 +543,8 @@ option {
   #restaurant-address {
     font-size: 25px;
   }
-  .restaurant-hours-heading,
-  #reviews-container h2 {
+
+  #reviews-container h3 {
     font-size: 35px;
   }
   td {
@@ -532,6 +575,12 @@ option {
 }
 
 /*media query for desktops*/
+
+@media screen and (min-width: 969px) {
+    #restaurants-list li {
+    width: 38%;
+  }
+}
 
 @media screen and (min-width: 1085px) {
   /*display the restaurants on 3 columns*/
@@ -567,8 +616,8 @@ option {
     width: 50%;
     align-self: flex-start;
 }
-  #restaurant-address-heading {
-    font-size: 35px;
+  #restaurant-address-heading, #restaurant-hours-heading {
+    font-size: 26px;
   }
 
     .leaflet-touch .leaflet-bar a {
@@ -579,6 +628,17 @@ option {
 }
 
 /*media query for big desktops*/
+
+@media screen and (min-width: 1200px) {
+  #restaurants-list li {
+  width: 28%;
+  }
+}
+@media screen and (min-width: 1445px) {
+  #restaurants-list li {
+    width: 25%;
+}
+}
 
 @media screen and (min-width: 1600px) {
   /*set a maximum width and add side margins*/

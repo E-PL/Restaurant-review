@@ -13,6 +13,7 @@
     <link crossorigin="" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity=
     "sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" rel="stylesheet">
     <!-- End stylesheets -->
+    <meta name="description" content="Udacity Frontend Nanodegree Restaurant Reviews project - Restaurant detail page">
     <title>
       Restaurant Info
     </title>
@@ -24,13 +25,13 @@
       <!-- Beginning nav -->
       <nav class="nav-with-breadcumb">
         <h1>
-          <a href="/">Restaurant Reviews</a>
+          <a href="/" aria-label="home">Restaurant Reviews</a>
         </h1>
         <!-- Moved breadcumb into nav -->
         <!-- Beginning breadcrumb -->
         <ul id="breadcrumb">
           <li>
-            <a href="/">Home</a>
+            <a href="/" tabindex="-1">Home</a>
           </li>
         </ul>
         <!-- End breadcrumb -->
@@ -49,22 +50,24 @@
       <!-- End map -->
 
       <!-- Beginning restaurant -->
-      <section id="restaurant-container">
-        <h1 id="restaurant-name"></h1>
+      <section id="restaurant-container" tabindex="0" aria-label="Restaurant details">
+        <h2 id="restaurant-name"></h2>
         <div id="restaurant-img-container">
           <img id="restaurant-img">
           <p id="restaurant-cuisine"></p>
         </div>
         <div id="restaurant-info">
+        	<h2 id="restaurant-address-heading">Address</h2>
           <p id="restaurant-address"></p>
-          <table id="restaurant-hours"></table>
+          <h2 id="restaurant-hours-heading">Opening hours</h2>
+          <table id="restaurant-hours" tabindex="0" aria-label="opening hours"></table>
         </div>
       </section>
       <!-- End restaurant -->
 
       <!-- Beginning reviews -->
       <section id="reviews-container">
-        <ul id="reviews-list"></ul>
+        <ul id="reviews-list" aria-label="reviews" tabindex="0"></ul>
       </section>
       <!-- End reviews -->
 
@@ -73,7 +76,7 @@
     
     <!-- Beginning footer -->
     <footer id="footer">
-      Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+      Copyright (c) 2017 <a href="/" aria-label="home"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
     </footer>
     <!-- End footer -->
 
@@ -83,7 +86,8 @@
     <!-- Database helpers --> 
     <script src="js/dbhelper.js" type="text/javascript"></script> 
     <!-- Main javascript file --> 
-    <script src="js/restaurant_info.js" type="text/javascript"></script> 
+    <script src="js/restaurant_info.js" type="text/javascript"></script>
+    
     <!-- End scripts -->
 
   </body>

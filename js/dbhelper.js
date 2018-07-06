@@ -159,8 +159,10 @@ class DBHelper {
    static mapMarkerForRestaurant(restaurant, map) {
     // https://leafletjs.com/reference-1.3.0.html#marker  
     const marker = new L.marker([restaurant.latlng.lat, restaurant.latlng.lng],
-      {title: restaurant.name,
-      alt: restaurant.name,
+      {title: restaurant.name + 'map marker',
+      // make the screen reader read the restaurant name and address of the map marker 
+      // TODO: think about if it's not too much 
+      alt: restaurant.name + ' ' + restaurant.address,
       url: DBHelper.urlForRestaurant(restaurant)
       })
       marker.addTo(newMap);

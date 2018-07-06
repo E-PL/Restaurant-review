@@ -90,7 +90,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   image.className = 'restaurant-img'
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
   // add alt to images
-  image.alt = restaurant.name;
+  image.alt = 'A picture of ' + restaurant.name;
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
 
@@ -128,7 +128,7 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
  */
 fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
-  const title = document.createElement('h2');
+  const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
   container.appendChild(title);
 
@@ -154,7 +154,7 @@ createReviewHTML = (review) => {
   const reviewHeadingDiv = document.createElement('div');
   reviewHeadingDiv.classList.add('review-headings'); 
   // use an heading for the reviewer name
-  const name = document.createElement('h3');
+  const name = document.createElement('h4');
   name.innerHTML = review.name;
   // add a class to the review heading
   name.classList.add('reviewer-name');
@@ -167,7 +167,7 @@ createReviewHTML = (review) => {
   reviewHeadingDiv.appendChild(date);
   li.appendChild(reviewHeadingDiv);
 
-  const rating = document.createElement('p');
+  const rating = document.createElement('h5');
   rating.innerHTML = `Rating: ${review.rating}`;
   // add a class to rating
   rating.classList.add('review-rating');
