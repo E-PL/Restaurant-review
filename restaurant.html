@@ -24,15 +24,15 @@
     <!-- Beginning header -->
     <header>
       <!-- Beginning nav -->
-      <nav class="nav-with-breadcumb">
+      <nav class="nav-with-breadcumb" role="navigation" aria-label="breadcrumb">
         <h1>
           <a href="/" aria-label="home">Restaurant Reviews</a>
         </h1>
         <!-- Moved breadcumb into nav -->
         <!-- Beginning breadcrumb -->
-        <ul id="breadcrumb">
+        <ul id="breadcrumb" >
           <li>
-            <a href="/" tabindex="-1">Home</a>
+            <a href="/" aria-label="home">Home</a>
           </li>
         </ul>
         <!-- End breadcrumb -->
@@ -46,7 +46,7 @@
 
       <!-- Beginning map -->
       <section id="map-container">
-        <div id="map"></div>
+        <div id="map" role="application" aria-label="map"></div>
       </section>
       <!-- End map -->
 
