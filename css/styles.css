@@ -112,7 +112,7 @@ section {
 /*styles for the navigation*/
 nav {
   width: 100%;
-  height: 93px;
+  height: 94px;
   background-color: #252831;
   text-align: center;
   display: flex;
@@ -176,9 +176,14 @@ nav h1 a {
 
 /* ====================== Map ====================== */
 
+#map-container {
+  background-color: #252831;
+}
+
 #map {
   height: 400px;
-  width: 100%;
+  width: 90%;
+  margin: auto;
   background-color: #ccc;
 }
 
@@ -502,6 +507,13 @@ option {
   nav h1 a {
     font-size: 34px;
   }
+  
+  /*display the map at full width and remove margins*/
+  #map {
+  width: 100%;
+  margin: none;
+  }
+
   /*use a two column layout on the main page*/
   #restaurants-list li {
     width: 42%;
