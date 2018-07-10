@@ -315,10 +315,12 @@ option {
   background: blue none repeat scroll 0 0;
   height: 87%;
   width: 100%;
+  background-color: #fff;
 }
 .inside #map {
   background-color: #ccc;
-  width: 100%;
+  width: 90%;
+  margin: auto;
 }
 .inside #footer {
   width: 100%;
@@ -545,6 +547,10 @@ option {
   
   #breadcrumb {
     font-size: 21px;
+  }
+  .inside #map {
+  width: 100%;
+  margin: none;
   }
   #restaurant-name {
     font-size: 35px;
