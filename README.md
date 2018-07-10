@@ -12,14 +12,7 @@ Udacity provided the code for a restaurant reviews website. The code has a lot o
 
 ### How to run the project
 
-1. Clone the repository or download and unzip it in a folder of choice
-
-2. If you have Python 3.7.0 installed, start a server from the command line: 'python -m http.server 7788 --bind 127.0.0.1'
-
-If you don't have Python installed, navigate to Python's [website](https://www.python.org/) to download and install the software.
-
-3. With your server running, visit the site: `http://localhost:7788`
-
+Visit the project [live page](https://e-pl.github.io/Restaurant-review/)
 
 ## Leaflet.js and Mapbox:
 
