@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
  */
 let registerServiceWorker = () => {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js', { 
+    navigator.serviceWorker.register('/Restaurant-review/sw.js', { 
       scope: '/'
     }).catch(function(serviceWorkerError){
             console.log('Service Worker registration ERROR');
