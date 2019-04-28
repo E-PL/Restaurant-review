@@ -12,7 +12,7 @@ Udacity provided the code for a restaurant reviews website. The code has a lot o
 
 ### How to run the project
 
-Visit the project [live page](https://e-pl.github.io/Restaurant-review/)
+Visit the project [live page](https://e-pl.github.io/)
 
 ## Leaflet.js and Mapbox:
 

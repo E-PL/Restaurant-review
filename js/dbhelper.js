@@ -9,7 +9,7 @@ class DBHelper {
    */
   static get DATABASE_URL() {
     
-    return `https://e-pl.github.io/Restaurant-review/data/restaurants.json`;
+    return `/data/restaurants.json`;
   }
 
   /**
@@ -150,7 +150,7 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/Restaurant-review/img/${restaurant.photograph}`);
+    return (`/img/${restaurant.photograph}`);
   }
 
   /**
