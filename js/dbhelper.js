@@ -253,7 +253,13 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
+    // it looks like the new API server is lacking one picture, falling back to a placeholder
+    if (restaurant.photograph) {
     return `/img/${restaurant.photograph}`;
+    }
+    else {
+      return '/img/placeholder';
+    }
   }
 
   /**

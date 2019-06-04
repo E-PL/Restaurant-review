@@ -43,9 +43,11 @@ initApp = () => {
     }
     // if data is already in indexedDB, initialize the map and populate page with indexedDB data
     if (keys) {
+      localforage.ready().then(() => {
       initMap(); // added
       fetchNeighborhoods();
       fetchCuisines();
+    });
     }
   });
 };
