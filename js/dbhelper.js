@@ -26,20 +26,43 @@ class DBHelper {
   }
 
   /**
+   * Fetch all restaurants reviews
+   */
+
+  static fetchReviews(callback) {
+    // fetch reviews from API
+    fetch("http://localhost:1337/reviews")
+      .then(response => {
+        let responseCopy = response;
+        let data = responseCopy.json();
+        return data;
+      })
+      // pass reviews to callback if received from API
+      .then(data => {
+        callback(null, data);
+      })
+      // if there is an error log it to the console and pass it to callback
+      .catch(error => {
+        console.log(error);
+        callback(error, null);
+      });
+  }
+
+  /**
    * Save API data to indexedDB using localforage
    */
   static saveRestaurants(data, callback) {
     // if there's data to be saved
     if (data) {
       // when indexedDB is ready
-      localforage
+      this.restaurantsDB
         .ready()
         // save array in indexedDB
         .then(() => {
           // for each element in the array
           data.forEach(restaurant => {
             // use restaurant name as index and save it's data on the indexedDB
-            localforage
+            this.restaurantsDB
               .setItem(restaurant.name, restaurant)
               // print errors to console
               .catch(error => {
@@ -47,7 +70,39 @@ class DBHelper {
               });
           });
           // when all data is saved pass indexedDB status to callback
-          callback(null, localforage.driver());
+          callback(null, this.restaurantsDB.driver());
+        })
+        // if any error occurs, print it to console and pass it to callback
+        .catch(error => {
+          console.log(error);
+          callback(error, null);
+        });
+    }
+  }
+
+  /**
+   * Save API reviews data to indexedDB using localforage
+   */
+  static saveReviews(data, callback) {
+    // if there's data to be saved
+    if (data) {
+      // when indexedDB is ready
+      this.reviewsDB
+        .ready()
+        // save array in indexedDB
+        .then(() => {
+          // for each element in the array
+          data.forEach(review => {
+            // use restaurant name as index and save it's data on the indexedDB
+            this.reviewsDB
+              .setItem(review.id.toString(), review)
+              // print errors to console
+              .catch(error => {
+                console.log(error);
+              });
+          });
+          // when all data is saved pass indexedDB status to callback
+          callback(null, this.reviewsDB.driver());
         })
         // if any error occurs, print it to console and pass it to callback
         .catch(error => {
@@ -61,28 +116,38 @@ class DBHelper {
    * Initalize indexedDB
    */
   static initIdb() {
-    localforage.config({
-      driver: localforage.INDEXEDDB,
-      name: "Restaurants",
-      storeName: "RestaurantStore"
-    });
+    if (!this.restaurantsDB) {
+      this.restaurantsDB = localforage.createInstance({
+        driver: localforage.INDEXEDDB,
+        name: "Restaurants",
+        storeName: "RestaurantInfoStore"
+      });
+    }
+    if (!this.reviewsDB) {
+      this.reviewsDB = localforage.createInstance({
+        driver: localforage.INDEXEDDB,
+        name: "Restaurants",
+        storeName: "ReviewsStore"
+      });
+    }
   }
 
   /**
-   * Check for indexedDB status, is it the first visit?
+   *
+   * check for restaurants IDB status
    */
-  static checkDBStatus(callback) {
-    // Gets the number of keys in the indexedDB
-    localforage
+  static checkRestaurantsDBStatus(callback) {
+    // check Localforage instance for the number of keys
+    this.restaurantsDB
       .length()
       .then(numberOfKeys => {
-        // if there are keys in indexedeDB, it's not the first visit, pass the number of keys to callback
+        // if there are keys
         if (numberOfKeys > 0) {
+          // pass the number of keys to callback
           callback(null, numberOfKeys);
         }
-        // if there are no keys in the indexedDB, initialize it
+        // if there are no keys
         else {
-          DBHelper.initIdb();
           // pass a string as error to callback
           callback("no data", null);
         }
@@ -91,21 +156,43 @@ class DBHelper {
       .catch(function(error) {
         // print error to console
         console.log(error);
-        // init indexedDB
-        DBHelper.initIdb();
+        // and pass the error to callback
+        callback(error, null);
+      });
+  }
+
+  /**
+   *
+   * check for reviews IDB status
+   */
+  static checkReviewsDBStatus(callback) {
+    this.reviewsDB
+      .length()
+      .then(numberOfKeys => {
+        if (numberOfKeys > 0) {
+          callback(null, numberOfKeys);
+        } else {
+          // pass a string as error to callback
+          callback("no data", null);
+        }
+      })
+      //if any error is catched
+      .catch(function(error) {
+        // print error to console
+        console.log(error);
         // pass the error to callback
         callback(error, null);
       });
   }
 
   /**
-   * Read indexedDB data
+   * Read indexedDB restaurants data
    */
   static readRestaurants(callback) {
     // create an empty array
     let restaurants = [];
     // append all indexedDB keys to the array
-    localforage
+    this.restaurantsDB
       .iterate(restaurant => {
         restaurants.push(restaurant);
       })
@@ -118,6 +205,56 @@ class DBHelper {
         console.log(error);
         callback(error, null);
       });
+  }
+
+  /**
+   * Read indexedDB reviews data
+   */
+  static readReviews(callback) {
+    // create an empty array
+    let reviews = [];
+    // append all indexedDB keys to the array
+    this.reviewsDB
+      .iterate(review => {
+        reviews.push(review);
+      })
+      .then(function() {
+        // pass the reviews array to callback
+        callback(null, reviews);
+      })
+      .catch(function(error) {
+        // in case of error, print them to console and pass it to callback
+        console.log(error);
+        callback(error, null);
+      });
+  }
+
+  /**
+   * Find reviews by restaurant ID.
+   */
+  static findReviewsByRestaurantId(id, callback) {
+    // fetch all restaurants with proper error handling.
+    console.log('finding reviews');
+    DBHelper.readReviews((error, reviews) => {
+      if (error) {
+        console.log('error reading');
+        callback(error, null);
+      } else {
+        const result = reviews.filter((review) => {
+          return review.restaurant_id = id;
+        })
+        
+        if (result) {
+          console.log(result);
+
+          // there are reviews
+          callback(null, result);
+        } else {
+          // no reviews
+          callback("no reviews", null);
+        }
+      }
+    });
   }
 
   /**
@@ -255,10 +392,9 @@ class DBHelper {
   static imageUrlForRestaurant(restaurant) {
     // it looks like the new API server is lacking one picture, falling back to a placeholder
     if (restaurant.photograph) {
-    return `/img/${restaurant.photograph}`;
-    }
-    else {
-      return '/img/placeholder';
+      return `/img/${restaurant.photograph}`;
+    } else {
+      return "/img/placeholder";
     }
   }
 

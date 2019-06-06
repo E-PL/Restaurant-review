@@ -5,6 +5,7 @@ var newMap;
  * At page load, initialize app
  */
 document.addEventListener("DOMContentLoaded", event => {
+  DBHelper.initIdb();
   initApp();
 });
 
@@ -13,7 +14,7 @@ document.addEventListener("DOMContentLoaded", event => {
  */
 initApp = () => {
   // check if the indexedDb already contains restaurants data
-  DBHelper.checkDBStatus((error, keys) => {
+  DBHelper.checkRestaurantsDBStatus((error, keys) => {
     // if there is no data in indexedDb, fetch data from API
     if (error) {
       DBHelper.fetchRestaurants((error, data) => {
@@ -43,6 +44,37 @@ initApp = () => {
       initMap();
     }
   });
+
+  DBHelper.checkReviewsDBStatus((error, keys) => {
+    // if they are not, fetch them from API
+    if (error) {
+      console.log(error);
+      console.log('fetching reviews');
+      DBHelper.fetchReviews((error, data) => {
+        if (error) {
+          console.log(error);
+        }
+        // and save them to IDB
+        if (data) {
+          DBHelper.saveReviews(data, (error, idbOK) => {
+            if (error) {
+              console.log(error);
+            }
+            if (idbOK) {
+              console.log(idbOK)
+            }
+          })
+        }
+      })
+    }
+    // if reviews are already cached, print a message to console
+    // TODO: remove console.log and think about updating reviews cache instead
+    if (keys) {
+      console.log("reviewsDB OK");
+     
+    }
+  });
+
 };
 
 /**
@@ -100,6 +132,20 @@ fetchRestaurantFromURL = callback => {
         return;
       }
       fillRestaurantHTML();
+
+      console.log(self);
+      DBHelper.findReviewsByRestaurantId(id, (error, reviews) => {
+        if (error) {
+          console.log(error);
+        }
+        if (reviews) {
+          console.log(reviews);
+          self.reviews = reviews;
+            // fill reviews
+  fillReviewsHTML();
+        }
+      });
+
       callback(null, restaurant);
     });
   }
@@ -127,8 +173,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
-  // fill reviews
-  fillReviewsHTML();
+
 };
 
 /**
@@ -157,7 +202,9 @@ fillRestaurantHoursHTML = (
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+fillReviewsHTML = (reviews = self.reviews) => {
+  console.log(reviews);
+  console.log('filling');
   const container = document.getElementById("reviews-container");
   const title = document.createElement("h3");
   title.innerHTML = "Reviews";
@@ -192,7 +239,10 @@ createReviewHTML = review => {
   reviewHeadingDiv.appendChild(name);
 
   const date = document.createElement("p");
-  date.innerHTML = review.date;
+  console.log(review.createdAt);
+  let theDate = new Date(review.createdAt);
+  date.innerHTML = theDate.toLocaleDateString();
+  console.log(theDate);
   // add a class to the review date
   date.classList.add("review-date");
   reviewHeadingDiv.appendChild(date);

@@ -6,6 +6,8 @@ var markers = [];
  * At page load, initialize app
  */
 document.addEventListener("DOMContentLoaded", event => {
+  // initialize indexedDB 
+  DBHelper.initIdb();
   initApp();
 });
 
@@ -14,9 +16,11 @@ document.addEventListener("DOMContentLoaded", event => {
  */
 initApp = () => {
   // check if the indexedDb already contains restaurants data
-  DBHelper.checkDBStatus((error, keys) => {
+  DBHelper.checkRestaurantsDBStatus((error, keys) => {
     // if there is no data in indexedDb, fetch data from API
     if (error) {
+      console.log(error);
+      console.log('fetching restaurants');
       DBHelper.fetchRestaurants((error, data) => {
         // print fetch errors to the console
         if (error) {
@@ -31,10 +35,43 @@ initApp = () => {
             }
             // wait for indexedDb to be ready, then initialize map and populate page html with indexedDB data
             if (idbOK) {
-              localforage.ready().then(() => {
+              DBHelper.restaurantsDB.ready().then(() => {
                 initMap(); // added
                 fetchNeighborhoods();
                 fetchCuisines();
+              })
+              // after the main page is loaded (on first load), fetch reviews from API
+              .then(() => {
+                // first, check if reviews are already cached
+                DBHelper.checkReviewsDBStatus((error, keys) => {
+                  // if they are not, fetch them from API
+                  if (error) {
+                    console.log(error);
+                    console.log('fetching reviews');
+                    DBHelper.fetchReviews((error, data) => {
+                      if (error) {
+                        console.log(error);
+                      }
+                      // and save them to IDB
+                      if (data) {
+                        DBHelper.saveReviews(data, (error, idbOK) => {
+                          if (error) {
+                            console.log(error);
+                          }
+                          if (idbOK) {
+                            console.log(idbOK)
+                          }
+                        })
+                      }
+                    })
+                  }
+                  // if reviews are already cached, print a message to console
+                  // TODO: remove console.log and think about updating reviews cache instead
+                  if (keys) {
+                    console.log("reviewsDB OK")
+                  }
+                });
+
               });
             }
           });
@@ -43,11 +80,47 @@ initApp = () => {
     }
     // if data is already in indexedDB, initialize the map and populate page with indexedDB data
     if (keys) {
-      localforage.ready().then(() => {
+      DBHelper.restaurantsDB.ready().then(() => {
+        console.log("cached restaurants:");
+      console.log(keys);
       initMap(); // added
       fetchNeighborhoods();
       fetchCuisines();
+    })
+    // on not-first homepage load check if reviews are cached, and if not, fetch them and save them to indexedDB
+    .then(() => {
+      // first, check if reviews are already cached
+      DBHelper.checkReviewsDBStatus((error, keys) => {
+        // if they are not, fetch them from API
+        if (error) {
+          console.log(error);
+          console.log('fetching reviews');
+          DBHelper.fetchReviews((error, data) => {
+            if (error) {
+              console.log(error);
+            }
+            // and save them to IDB
+            if (data) {
+              DBHelper.saveReviews(data, (error, idbOK) => {
+                if (error) {
+                  console.log(error);
+                }
+                if (idbOK) {
+                  console.log(idbOK)
+                }
+              })
+            }
+          })
+        }
+        // if reviews are already cached, print a message to console
+        // TODO: remove console.log and think about updating reviews cache instead
+        if (keys) {
+          console.log("reviewsDB OK")
+        }
+      });
+
     });
+    
     }
   });
 };
