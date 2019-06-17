@@ -116,6 +116,15 @@ class DBHelper {
    * Initalize indexedDB
    */
   static initIdb() {
+    //TODO: useful?
+    if (this.restaurantsDB) {
+      localforage
+        .dropInstance({
+          name: "Restaurants",
+          storeName: "RestaurantInfoStore"
+        })
+        .then(() => {});
+    }
     if (!this.restaurantsDB) {
       this.restaurantsDB = localforage.createInstance({
         driver: localforage.INDEXEDDB,
@@ -234,19 +243,17 @@ class DBHelper {
    */
   static findReviewsByRestaurantId(id, callback) {
     // fetch all restaurants with proper error handling.
-    console.log('finding reviews');
+
     DBHelper.readReviews((error, reviews) => {
       if (error) {
-        console.log('error reading');
+        console.log("error reading");
         callback(error, null);
       } else {
-        const result = reviews.filter((review) => {
-          return review.restaurant_id = id;
-        })
-        
-        if (result) {
-          console.log(result);
+        const result = reviews.filter(review => {
+          return (review.restaurant_id = id);
+        });
 
+        if (result) {
           // there are reviews
           callback(null, result);
         } else {
@@ -257,6 +264,103 @@ class DBHelper {
     });
   }
 
+  /**
+   * Fetch restaurant favorite status by its ID
+   * TODO: useful?
+   */
+  static fetchRestaurantIsStarredByID(id, callback) {
+    fetch(`http://localhost:1337/restaurants/${id}/?is_favorite=true`)
+      .then(response => {
+        if (response) {
+          const responseCopy = response;
+          const data = responseCopy.json();
+          return data;
+        }
+      })
+      .then(data => {
+        if (data.is_favorite == false) {
+          callback(null, false);
+        }
+        if (data.is_favorite == true) {
+          callback(null, true);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        callback(error, null);
+      });
+  }
+  // TODO: no use?
+  static fetchAllFavoriteRestaurants(callback) {
+    fetch("http://localhost:1337/restaurants/?is_favorite=true")
+      .then(response => {
+        if (response) {
+          const responseCopy = response;
+          const data = response.json();
+          callback(null, data);
+        } else {
+          console.log("no response");
+          callback(null, null);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        callback(error, null);
+      });
+  }
+
+  static saveFavoriteRestaurantToIDB(restaurantName, callback) {
+    // find the restaurant by name in IDB
+
+    this.restaurantsDB.ready().then(() => {
+      this.restaurantsDB
+        .getItem(restaurantName, (error, restaurant) => {
+          let theRestaurant = restaurant;
+          theRestaurant.is_favorite = !theRestaurant.is_favorite;
+
+          this.restaurantsDB.setItem(restaurantName, theRestaurant);
+          return theRestaurant;
+        })
+        .then(restaurant => {
+          callback(null, restaurant);
+        })
+        .catch(error => {
+          callback(error, null);
+        });
+      // TODO: check callback, I'm rushing and I'm not sure.
+    });
+  }
+
+  static saveFavoriteRestaurantToAPI(restaurant, callback) {
+    // headers
+    const headers = new Headers();
+    const initFetch = {
+      method: "PUT",
+      headers: headers,
+      mode: "cors",
+      cache: "default"
+    };
+    const requestUrl = `http://localhost:1337/restaurants/${
+      restaurant.id
+    }/?is_favorite=${restaurant.is_favorite}`;
+    const request = new Request(requestUrl, initFetch);
+    fetch(request)
+      .then(response => {
+        let responseCopy = response;
+        return responseCopy.json();
+      })
+      .then(response => {
+        if (response.statusText === "OK") {
+          callback(null, response.statusText);
+        } else {
+          callback(response.statusText);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        callback(error, null);
+      });
+  }
   /**
    * Fetch a restaurant by its ID.
    */

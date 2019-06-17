@@ -49,7 +49,7 @@ initApp = () => {
     // if they are not, fetch them from API
     if (error) {
       console.log(error);
-      console.log('fetching reviews');
+      console.log("fetching reviews");
       DBHelper.fetchReviews((error, data) => {
         if (error) {
           console.log(error);
@@ -60,21 +60,16 @@ initApp = () => {
             if (error) {
               console.log(error);
             }
-            if (idbOK) {
-              console.log(idbOK)
-            }
-          })
+          });
         }
-      })
+      });
     }
     // if reviews are already cached, print a message to console
     // TODO: remove console.log and think about updating reviews cache instead
     if (keys) {
-      console.log("reviewsDB OK");
-     
+   
     }
   });
-
 };
 
 /**
@@ -133,16 +128,26 @@ fetchRestaurantFromURL = callback => {
       }
       fillRestaurantHTML();
 
-      console.log(self);
       DBHelper.findReviewsByRestaurantId(id, (error, reviews) => {
         if (error) {
           console.log(error);
         }
         if (reviews) {
-          console.log(reviews);
           self.reviews = reviews;
-            // fill reviews
-  fillReviewsHTML();
+          // fill reviews
+          fillReviewsHTML();
+        }
+      });
+      DBHelper.fetchRestaurantIsStarredByID(id, (error, isStarred) => {
+        if (error) {
+          isStarred = false;
+          console.log(error);
+        }
+
+        if (isStarred != undefined) {
+          if (isStarred == true) {
+            lightTheStarUp();
+          }
         }
       });
 
@@ -157,6 +162,16 @@ fetchRestaurantFromURL = callback => {
 fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById("restaurant-name");
   name.innerHTML = restaurant.name;
+
+  // toggle favorite star
+  let star = document.getElementById("star");
+  if (restaurant.is_favorite === "true" || restaurant.is_favorite === true) {
+  
+    star.classList.toggle("lightened");
+  }
+  star.addEventListener("click", e => {
+    toggleFavorite(restaurant.name);
+  });
 
   const address = document.getElementById("restaurant-address");
   address.innerHTML = restaurant.address;
@@ -173,7 +188,6 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
-
 };
 
 /**
@@ -203,8 +217,6 @@ fillRestaurantHoursHTML = (
  * Create all reviews HTML and add them to the webpage.
  */
 fillReviewsHTML = (reviews = self.reviews) => {
-  console.log(reviews);
-  console.log('filling');
   const container = document.getElementById("reviews-container");
   const title = document.createElement("h3");
   title.innerHTML = "Reviews";
@@ -239,10 +251,10 @@ createReviewHTML = review => {
   reviewHeadingDiv.appendChild(name);
 
   const date = document.createElement("p");
-  console.log(review.createdAt);
+
   let theDate = new Date(review.createdAt);
   date.innerHTML = theDate.toLocaleDateString();
-  console.log(theDate);
+
   // add a class to the review date
   date.classList.add("review-date");
   reviewHeadingDiv.appendChild(date);
@@ -269,8 +281,9 @@ createReviewHTML = review => {
 fillBreadcrumb = (restaurant = self.restaurant) => {
   const breadcrumb = document.getElementById("breadcrumb");
   const li = document.createElement("li");
+  const button = document.getElementById("star-li");
   li.innerHTML = restaurant.name;
-  breadcrumb.appendChild(li);
+  breadcrumb.insertBefore(li, button);
 };
 
 /**
@@ -284,4 +297,37 @@ getParameterByName = (name, url) => {
   if (!results) return null;
   if (!results[2]) return "";
   return decodeURIComponent(results[2].replace(/\+/g, " "));
+};
+
+/**
+ *  Toggle the favorite star
+ */
+lightTheStarUp = () => {
+  const theStar = document.getElementById("star");
+  theStar.classList.toggle("lightened");
+};
+
+/**
+ *  Star button clicked
+ */
+toggleFavorite = name => {
+
+  lightTheStarUp();
+  DBHelper.saveFavoriteRestaurantToIDB(name, (error, restaurant) => {
+    if (error) {
+      console.log(error);
+      //TODO: add error handling
+    }
+    if (restaurant) {
+      DBHelper.saveFavoriteRestaurantToAPI(restaurant, (error, restaurant) => {
+        if (error) {
+          console.log(error);
+          // TODO: add error handling
+        }
+        if (restaurant) {
+          console.log(restaurant);
+        }
+      });
+    }
+  });
 };

@@ -332,10 +332,10 @@ option {
   font-size: 23px;
   font-weight: 200;
   letter-spacing: 0;
-  margin: 15px;
+  margin:0 15px;
   text-transform: uppercase;
   line-height: 1.1;
-  padding: 20px 0 20px 0;
+  padding: 20px 0 0 0;
 }
 #restaurant-img-container {
   width: 90%;
@@ -485,6 +485,22 @@ option {
 }
 #restaurant-hours td {
   color: #666;
+}
+
+/*style the favorite star*/
+#star {
+  display: inline;
+  margin:0;
+  padding: 5px;
+
+  font-size: 2em;
+}
+#star.lightened {
+  color: gold;
+}
+#fav-toggle-text {
+  font-size: 16px;
+  color: #333;
 }
 
 /*media queries*/
