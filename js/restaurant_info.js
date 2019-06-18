@@ -67,7 +67,6 @@ initApp = () => {
     // if reviews are already cached, print a message to console
     // TODO: remove console.log and think about updating reviews cache instead
     if (keys) {
-   
     }
   });
 };
@@ -107,6 +106,9 @@ initMap = () => {
 
 /**
  * Get current restaurant from page URL.
+ * TODO: refactor
+ * starting everything after map load might be ok,
+ * but here instead of getting the id everything is happening.
  */
 fetchRestaurantFromURL = callback => {
   if (self.restaurant) {
@@ -133,9 +135,8 @@ fetchRestaurantFromURL = callback => {
           console.log(error);
         }
         if (reviews) {
-          self.reviews = reviews;
           // fill reviews
-          fillReviewsHTML();
+          fillReviewsHTML(reviews);
         }
       });
       DBHelper.fetchRestaurantIsStarredByID(id, (error, isStarred) => {
@@ -163,14 +164,22 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById("restaurant-name");
   name.innerHTML = restaurant.name;
 
+  // TODO: refactor -  function install event listeners
   // toggle favorite star
   let star = document.getElementById("star");
   if (restaurant.is_favorite === "true" || restaurant.is_favorite === true) {
-  
     star.classList.toggle("lightened");
   }
   star.addEventListener("click", e => {
     toggleFavorite(restaurant.name);
+  });
+
+  // review form event listener
+
+  let reviewForm = document.getElementById("write-review");
+  reviewForm.addEventListener("submit", e => {
+    e.preventDefault();
+    handleReviewSubmission(restaurant.id, e);
   });
 
   const address = document.getElementById("restaurant-address");
@@ -216,7 +225,7 @@ fillRestaurantHoursHTML = (
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = (reviews = self.reviews) => {
+fillReviewsHTML = reviews => {
   const container = document.getElementById("reviews-container");
   const title = document.createElement("h3");
   title.innerHTML = "Reviews";
@@ -311,7 +320,6 @@ lightTheStarUp = () => {
  *  Star button clicked
  */
 toggleFavorite = name => {
-
   lightTheStarUp();
   DBHelper.saveFavoriteRestaurantToIDB(name, (error, restaurant) => {
     if (error) {
@@ -331,3 +339,93 @@ toggleFavorite = name => {
     }
   });
 };
+
+/*
+* handles review creation
+*/
+handleReviewSubmission = (id, e) => {
+  // get form data
+  const data = new FormData(e.target);
+  const rating = data.get("rating");
+  const review = data.get("review");
+  const reviewer = data.get("reviewer");
+  // get the date
+  const date = new Date();
+  const reviewDate = date.getTime();
+  // get first free id
+  DBHelper.reviewsDB
+    .length()
+    .then(numberOfReviews => {
+      let nextID = numberOfReviews;
+      nextID++;
+      //create the review object
+      return createReview(review, reviewDate, nextID, reviewer, rating, id);
+    })
+    .then(review => {
+      // show the review on page
+      showNewReview(review);
+      // cache review to IDB
+      saveReview(review);
+      // save review to API
+      uploadReview(review);
+    })
+    // handle errors
+    .catch(error => {
+      console.log(error);
+    });
+}
+
+/*
+* create the review object
+*/
+createReview = (review, reviewDate, nextID, reviewer, rating, id) => {
+  const newReview = {
+    id: nextID,
+    restaurant_id: id,
+    name: reviewer,
+    createdAt: reviewDate,
+    updatedAt: reviewDate,
+    comments: review,
+    rating: rating
+  };
+  return newReview;
+}
+
+/*
+* display new review on page, reset the form
+*/
+showNewReview = (review) => {
+  // dreate review html
+  const li = createReviewHTML(review);
+  const container = document.getElementById("reviews-list");
+  // display it on page
+  container.appendChild(li);
+  // reset form
+  document.getElementById("review-text").value = "";
+  document.getElementById("reviewer").value = "";
+  let radios = document.getElementsByName("rating");
+  radios.forEach(radio => {
+    radio.checked = false;
+  });
+}
+
+/*
+* cache new review to IDB
+*/
+saveReview = (review) => {
+  DBHelper.reviewsDB.setItem(review.id.toString(), review);
+}
+
+/*
+ * handle saving new review to API server
+ */
+uploadReview = (review) => {
+  // pass the review to the DBHelper function
+  DBHelper.saveReviewToAPI(review, error => {
+    // handle errors
+    if (error) {
+      console.log(error);
+      //TODO: retry
+    }
+  });
+}

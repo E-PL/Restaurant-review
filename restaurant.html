@@ -38,7 +38,12 @@
       content="black-translucent"
     />
     <meta name="msapplication-starturl" content="/" />
-    <link rel="icon" type="image/png" sizes="192x192" href="/img/icons/home_icon.png" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="/img/icons/home_icon.png"
+    />
     <link
       rel="apple-touch-icon"
       type="image/png"
@@ -66,12 +71,12 @@
             <a href="/" aria-label="home">Home</a>
           </li>
           <li id="star-li">
-              <button id="star">&#x2729; <span id="fav-toggle-text"> Mark as favorite</span></button>
+            <button id="star">
+              &#x2729; <span id="fav-toggle-text"> Mark as favorite</span>
+            </button>
           </li>
         </ul>
         <!-- End breadcrumb -->
-        
-
       </nav>
       <!-- End nav -->
     </header>
@@ -114,6 +119,45 @@
         <ul id="reviews-list" aria-label="reviews" tabindex="0"></ul>
       </section>
       <!-- End reviews -->
+      <section id="review-form-section">
+        <form id="write-review">
+          <fieldset>
+            <legend>Rating</legend>
+            <ul>
+              <li>
+                <label for="rating-one">1</label>
+                <input type="radio" name="rating" id="rating-one" value="1" required/>
+              </li>
+              <li>
+                <label for="rating-one">2</label>
+                <input type="radio" name="rating" id="rating-two" value="2" required/>
+              </li>
+              <li>
+                <label for="rating-one">3</label>
+                <input type="radio" name="rating" id="rating-three" value="3" required/>
+              </li>
+              <li>
+                <label for="rating-one">4</label>
+                <input type="radio" name="rating" id="rating-four" value="4" required/>
+              </li>
+              <li>
+                <label for="rating-one">5</label>
+                <input type="radio" name="rating" id="rating-five" value="5" required/>
+              </li>
+            </ul>
+          </fieldset>
+          <textarea
+          placeholder="Your review"
+            name="review"
+            id="review-text"
+            cols="30"
+            rows="10"
+            required
+          ></textarea>
+          <input type="text" name="reviewer" id="reviewer" placeholder="Your name" required>
+          <button id="submit-review">Submit your review</button>
+        </form>
+      </section>
     </main>
     <!-- End main -->
 

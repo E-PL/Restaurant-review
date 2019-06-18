@@ -31,7 +31,7 @@ class DBHelper {
 
   static fetchReviews(callback) {
     // fetch reviews from API
-    fetch("http://localhost:1337/reviews")
+    fetch("http://localhost:1337/reviews?limit=-1")
       .then(response => {
         let responseCopy = response;
         let data = responseCopy.json();
@@ -250,7 +250,7 @@ class DBHelper {
         callback(error, null);
       } else {
         const result = reviews.filter(review => {
-          return (review.restaurant_id = id);
+          return review.restaurant_id == id;
         });
 
         if (result) {
@@ -520,4 +520,33 @@ class DBHelper {
     marker.addTo(newMap);
     return marker;
   }
+
+  /*
+  * Save new reviews to API server
+  */
+  static saveReviewToAPI = (review, callback) => {
+    // set headers
+    const headers = new Headers();
+    // POST body contents
+    let params = {
+      restaurant_id: review.restaurant_id,
+      name: review.name,
+      rating: review.rating,
+      comments: review.comments
+    };
+    // prepare fetch request
+    const init = {
+      method: "POST",
+      headers,
+      mode: "cors",
+      cache: "default",
+      body: JSON.stringify(params)
+    };
+    // send review to API server
+    fetch("http://localhost:1337/reviews/", init)
+    // pass errors to callback  
+    .catch((error) => {
+        callback(error, null);
+      })
+  };
 }
