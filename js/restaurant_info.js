@@ -367,7 +367,9 @@ handleReviewSubmission = (id, e) => {
       // cache review to IDB
       saveReview(review);
       // save review to API
-      uploadReview(review);
+      // click the dummy imput to trigger the event on service worker
+      let element = document.getElementById("dummy-click");
+      element.click();
     })
     // handle errors
     .catch(error => {
@@ -413,7 +415,10 @@ showNewReview = (review) => {
 * cache new review to IDB
 */
 saveReview = (review) => {
-  DBHelper.reviewsDB.setItem(review.id.toString(), review);
+  DBHelper.reviewsDB.setItem(review.id.toString(), review)
+  .then(() => {
+    return
+  })
 }
 
 /*

@@ -28,7 +28,6 @@ class DBHelper {
   /**
    * Fetch all restaurants reviews
    */
-
   static fetchReviews(callback) {
     // fetch reviews from API
     fetch("http://localhost:1337/reviews?limit=-1")
@@ -522,8 +521,8 @@ class DBHelper {
   }
 
   /*
-  * Save new reviews to API server
-  */
+   * Save new reviews to API server
+   */
   static saveReviewToAPI = (review, callback) => {
     // set headers
     const headers = new Headers();
@@ -544,9 +543,87 @@ class DBHelper {
     };
     // send review to API server
     fetch("http://localhost:1337/reviews/", init)
-    // pass errors to callback  
-    .catch((error) => {
-        callback(error, null);
+      // pass errors to callback
+      .then(response => {
+        callback(null, response);
       })
+      .catch(error => {
+        callback(error, null);
+      });
+  };
+
+  /*
+   * sync reviews on server with cached reviews
+   */
+  static updateReviewsOnServer = callback => {
+    // init IDB, just in case.
+    this.initIdb();
+    let cachedReviews = [];
+    let reviewsOnServer = [];
+    let missingReviews = [];
+    // retrieve cached reviews from IDB
+    DBHelper.reviewsDB
+      .iterate((value, key) => {
+        cachedReviews.push(value);
+      })
+      // then retrieve the reviews on the server
+      .then(() => {
+        console.log(cachedReviews);
+        return fetch("http://localhost:1337/reviews?limit=-1");
+      })
+      .then(response => {
+        return response.json();
+      })
+      // find the missing reviews on the server
+      .then(reviews => {
+        reviewsOnServer = reviews;
+        // extract ids from the reviews fetched from server
+        let onServerIds = reviewsOnServer.map(reviewOnServer => {
+          return reviewOnServer.id;
+        });
+        // find the missing reviews by finding witch cached reviews doesn't include the ids extracted from the reviews on server
+        missingReviews = cachedReviews.filter(cachedReview => {
+          return !onServerIds.includes(cachedReview.id);
+        });
+        return missingReviews;
+      })
+      // update the missing reviews on API server
+      .then(reviews => {
+        // create a promises array to track all missing review fetch status
+        let promises = [];
+        reviews.forEach(review => {
+          // the promise for each review
+          const promise = new Promise((resolve, reject) => {
+            
+            // execute the POST request
+            DBHelper.saveReviewToAPI(review, (error, response) => {
+              // if errors are passed as callback, reject promise and pass the error
+              if (error) {
+                reject(error);
+              }
+              // if error are passed as callback, fullfill promise and pass response codes
+              if (response) {
+                resolve(response.status + " - " + response.statusText);
+              }
+            });
+
+          });
+          // push the promise to the promises array
+          promises.push(promise);
+        });
+        // run promises
+        return Promise.all(promises);
+      })
+
+      // if and when all the promises are fullfilled, pass the responses status codes to callback
+      .then(responsesStatuses => {
+        callback(null, responsesStatuses);
+      })
+      
+      // if there is an error, pass it to callback instead
+      .catch(error => {
+        console.error(error);
+        callback(error, null);
+      });
   };
 }
