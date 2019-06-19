@@ -487,25 +487,61 @@ option {
   color: #666;
 }
 
+/* styles for the new review form*/
+
+#review-form-section {
+  width: 90%;
+  margin: auto;
+}
+#star-li::before {
+  content: unset !important;
+}
 /*style the favorite star*/
 #star {
   display: inline;
   margin:0;
   padding: 5px;
-
-  font-size: 2em;
+  font-size: 20px;
 }
 #star.lightened {
   color: gold;
 }
 #fav-toggle-text {
-  font-size: 16px;
+  font-size: 20px;
   color: #333;
 }
-
+#write-review {
+  text-align: center;
+  display: flex;
+  flex-flow: column;
+  padding: 10px;
+}
+#write-review textarea, #write-review input {
+  padding: 5px;
+}
+#rating-ul {
+  list-style-type: none;
+  display: inline-flex;
+}
+#submit-review {
+  height: 50px;
+  margin: 10px;
+  padding: 10px;
+  font-size: 18px;
+}
+.review-form-title {
+    color: #fff;
+    padding: 15px 0 15px 25px;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 200;
+    letter-spacing: 3px;
+}
+/* hide the dummy click imput */
 #dummy-click {
   display: none;
 }
+
 /*media queries*/
 
 /*Don't let the images grow too big*/
