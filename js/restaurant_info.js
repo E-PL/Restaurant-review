@@ -167,8 +167,14 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   // TODO: refactor -  function install event listeners
   // toggle favorite star
   let star = document.getElementById("star");
+  const favoriteText = document.getElementById("favorite-text");
+  const unFavoriteText = document.getElementById("unfavorite-text");
+  
+  
   if (restaurant.is_favorite === "true" || restaurant.is_favorite === true) {
     star.classList.toggle("lightened");
+    unFavoriteText.classList.toggle("hidden");
+    favoriteText.classList.toggle("hidden");
   }
   star.addEventListener("click", e => {
     toggleFavorite(restaurant.name);
@@ -313,7 +319,12 @@ getParameterByName = (name, url) => {
  */
 lightTheStarUp = () => {
   const theStar = document.getElementById("star");
+  const favoriteText = document.getElementById("favorite-text");
+  const unFavoriteText = document.getElementById("unfavorite-text");
   theStar.classList.toggle("lightened");
+  favoriteText.classList.toggle("hidden");
+  unFavoriteText.classList.toggle("hidden");
+
 };
 
 /**

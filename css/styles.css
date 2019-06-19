@@ -487,21 +487,21 @@ option {
   color: #666;
 }
 
-/* styles for the new review form*/
+/*style the favorite button*/
 
-#review-form-section {
-  width: 90%;
-  margin: auto;
-}
 #star-li::before {
   content: unset !important;
 }
-/*style the favorite star*/
 #star {
   display: inline;
   margin:0;
   padding: 5px;
   font-size: 20px;
+  min-width: 230px;
+  text-align: center;
+}
+#unfavorite-text, #favorite-text {
+  color: #333;
 }
 #star.lightened {
   color: gold;
@@ -509,6 +509,13 @@ option {
 #fav-toggle-text {
   font-size: 20px;
   color: #333;
+}
+
+/* styles for the new review form*/
+
+#review-form-section {
+  width: 90%;
+  margin: auto;
 }
 #write-review {
   text-align: center;
@@ -536,6 +543,10 @@ option {
     font-size: 20px;
     font-weight: 200;
     letter-spacing: 3px;
+}
+
+.hidden {
+  display: none;
 }
 /* hide the dummy click imput */
 #dummy-click {
