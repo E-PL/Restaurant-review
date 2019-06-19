@@ -503,6 +503,9 @@ option {
   color: #333;
 }
 
+#dummy-click {
+  display: none;
+}
 /*media queries*/
 
 /*Don't let the images grow too big*/
